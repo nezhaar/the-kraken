@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title data-i18n="page_title">The Kraken Bot</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #0d1117;
+      color: #c9d1d9;
+      margin: 0;
+      padding: 0;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    header {
+      text-align: center;
+      padding: 2rem;
+      background-color: #161b22;
+      position: relative;
+      z-index: 1;
+    }
+
+    h1 {
+      font-size: 3rem;
+      margin-bottom: 0.5rem;
+    }
+
+    p {
+      color: #8b949e;
+    }
+
+    a.button {
+      display: inline-block;
+      margin: 1rem 0.5rem;
+      padding: 0.75rem 1.5rem;
+      background-color: #238636;
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: bold;
+    }
+
+    a.button:hover {
+      background-color: #2ea043;
+    }
+
+    footer {
+      text-align: center;
+      padding: 1rem;
+      font-size: 0.9rem;
+      background-color: #161b22;
+      color: #6e7681;
+      position: relative;
+      z-index: 1;
+    }
+
+    footer a {
+      color: #58a6ff;
+      margin: 0 10px;
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
+
+    /* Bubbles background */
+    ul.background-bubbles {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      overflow: hidden;
+    }
+
+    ul.background-bubbles li {
+      position: absolute;
+      display: block;
+      list-style: none;
+      width: 20px;
+      height: 20px;
+      background: rgba(255, 255, 255, 0.1);
+      animation: bubble 20s linear infinite;
+      bottom: -150px;
+      border-radius: 50%;
+    }
+
+    ul.background-bubbles li:nth-child(1) { left: 25%; width: 80px; height: 80px; animation-duration: 22s; }
+    ul.background-bubbles li:nth-child(2) { left: 10%; width: 20px; height: 20px; animation-duration: 11s; }
+    ul.background-bubbles li:nth-child(3) { left: 70%; width: 20px; height: 20px; animation-duration: 15s; }
+    ul.background-bubbles li:nth-child(4) { left: 40%; width: 60px; height: 60px; animation-duration: 18s; }
+    ul.background-bubbles li:nth-child(5) { left: 65%; width: 20px; height: 20px; animation-duration: 12s; }
+    ul.background-bubbles li:nth-child(6) { left: 75%; width: 110px; height: 110px; animation-duration: 20s; }
+    ul.background-bubbles li:nth-child(7) { left: 35%; width: 150px; height: 150px; animation-duration: 25s; }
+    ul.background-bubbles li:nth-child(8) { left: 50%; width: 25px; height: 25px; animation-duration: 17s; }
+    ul.background-bubbles li:nth-child(9) { left: 20%; width: 15px; height: 15px; animation-duration: 10s; }
+    ul.background-bubbles li:nth-child(10) { left: 85%; width: 150px; height: 150px; animation-duration: 30s; }
+
+    @keyframes bubble {
+      0% {
+        transform: translateY(0) scale(1);
+        opacity: 0;
+      }
+      50% {
+        opacity: 0.4;
+      }
+      100% {
+        transform: translateY(-1000px) scale(1.5);
+        opacity: 0;
+      }
+    }
+
+    /* Styles pour les boutons de langue */
+    .lang-buttons {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      z-index: 10;
+    }
+
+    .lang-buttons button {
+      background: none;
+      border: none;
+      font-size: 28px;
+      margin-left: 10px;
+      cursor: pointer;
+      color: #c9d1d9;
+      transition: transform 0.2s;
+    }
+
+    .lang-buttons button:hover {
+      transform: scale(1.2);
+    }
+  </style>
+</head>
+<body>
+
+  <ul class="background-bubbles">
+    <li></li><li></li><li></li><li></li><li></li>
+    <li></li><li></li><li></li><li></li><li></li>
+  </ul>
+
+  <header>
+    <div class="lang-buttons">
+      <button onclick="changeLang('fr')" title="Français">🇫🇷</button>
+      <button onclick="changeLang('en')" title="English">🇬🇧</button>
+      <button onclick="changeLang('es')" title="Español">🇪🇸</button>
+    </div>
+
+    <h1>
+      <img src="krn.jpg" alt="Logo Kraken Bot" style="height: 50px; vertical-align: middle; margin-right: 10px;">
+      <span data-i18n="title">The Kraken Bot</span>
+    </h1>
+    <p data-i18n="subtitle">Un bot Discord complet pour la musique, la modération, les sondages, et plus encore.</p>
+    <a href="features.html" class="button" style="background-color:#00ff0d;" data-i18n="btn_features">Fonctionnalités</a>
+    <a href="https://discord.com/oauth2/authorize?client_id=1362320470547894272&permissions=8&scope=bot%20applications.commands" class="button" data-i18n="btn_invite">Inviter le bot</a>
+    <a href="https://krakentime-winter-paper-1452.fly.dev/" class="button" style="background-color:#0366d6;" data-i18n="btn_dashboard">Dashboard</a>
+    <a href="https://discord.gg/aXhAQSbM5E" class="button" style="background-color:#6f42c1;" data-i18n="btn_support">Serveur Support</a>
+  </header>
+
+  <footer>
+    <a href="privacy.html" data-i18n="footer_privacy">Politique de confidentialité</a> |
+    <a href="terms.html" data-i18n="footer_terms">Conditions d'utilisation</a><br>
+    <span data-i18n="footer_copyright">&copy; 2025 The Kraken Bot</span>
+  </footer>
+
+  <script src="lang.js"></script>
+  <script>
+    // La fonction `updatePageTitle` est déjà gérée directement dans `changeLang` du fichier `lang.js`
+    // en fonction de l'URL de la page. Donc, cette fonction spécifique ici n'est plus nécessaire
+    // si `lang.js` est correctement configuré pour gérer tous les titres de page.
+    // Cependant, pour la cohérence avec le script précédent que vous aviez, je le laisse.
+    function updatePageTitle(lang) {
+      const titleElement = document.querySelector('title');
+      if (titleElement && translations[lang] && translations[lang].page_title) {
+        titleElement.textContent = translations[lang].page_title;
+      }
+    }
+
+    // La fonction `changeLang` chargée depuis `lang.js` est la version principale.
+    // Le bloc ci-dessous redéfinit `changeLang` localement pour ajouter `saveLanguage`.
+    // Ceci est une bonne pratique si vous voulez que `index.html` ait un comportement
+    // de sauvegarde de langue unique ou étendu.
+    const originalChangeLang = window.changeLang; // Référence à la fonction changeLang de lang.js
+
+    window.changeLang = function(lang) {
+      originalChangeLang(lang); // Appelle la version principale de changeLang (qui gère data-i18n et titre)
+      saveLanguage(lang);      // Puis sauvegarde la langue pour cette page
+    };
+
+    // La fonction `loadLanguage` de `lang.js` sera appelée automatiquement au chargement du DOM.
+    // La logique de récupération de la langue sauvegardée est déjà dans `lang.js`.
+    // Il suffit de s'assurer que `saveLanguage` est appelée par la `changeLang` étendue.
+
+    // La fonction `getSavedLanguage` est déjà définie dans `lang.js`
+    // et sera appelée par `loadLanguage` de `lang.js`.
+    // Sa redéfinition ici n'est pas nécessaire si elle est déjà dans `lang.js`.
+
+    // Fonction pour sauvegarder la langue (déplacée ici pour la structure que vous aviez)
+    function saveLanguage(lang) {
+      try {
+        localStorage.setItem('siteLang', lang);
+      } catch (e) {
+        // Si localStorage n'est pas disponible, utiliser une variable globale
+        window.currentLanguage = lang;
+      }
+    }
+
+    // Le listener 'load' est également déjà géré par `lang.js` via `loadLanguage`.
+    // Ce bloc est redondant si `lang.js` est le point d'entrée principal.
+    // Cependant, si vous voulez que `index.html` ait le contrôle du chargement initial,
+    // vous pouvez le laisser, mais assurez-vous que `loadLanguage` de `lang.js`
+    // ne soit pas appelée deux fois, ou que cette partie remplace l'appel de `lang.js`.
+
+    // Simplification : Supprimez le loadListener si `lang.js` gère déjà l'initialisation.
+    // La solution la plus propre est de laisser `lang.js` gérer l'initialisation complète.
+    // L'essentiel est que `window.changeLang` dans `index.html` est étendue pour inclure `saveLanguage`.
+  </script>
+
+</body>
+</html>

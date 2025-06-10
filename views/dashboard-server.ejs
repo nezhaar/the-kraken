@@ -1,0 +1,1929 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Configuration - <%= guild.name %></title>
+  <style>
+    /* Styles Généraux */
+    * { box-sizing: border-box; }
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #2c3e50, #3498db); color: #fff; padding: 0; margin: 0; min-height: 100vh; }
+    
+    /* Header */
+    .header {
+      background: rgba(0, 0, 0, 0.3);
+      backdrop-filter: blur(10px);
+      padding: 20px;
+      text-align: center;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .header h1 { color: #7289DA; margin: 0; display: flex; align-items: center; justify-content: center; gap: 15px; }
+    .header p { margin: 10px 0 0 0; color: #bbb; }
+
+    /* Container principal */
+    .main-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    /* Navigation par onglets */
+    .tab-navigation {
+      display: flex;
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 15px;
+      padding: 5px;
+      margin-bottom: 30px;
+      gap: 5px;
+      overflow-x: auto;
+      flex-wrap: wrap;
+    }
+
+    .tab-button {
+      flex: 1;
+      min-width: 150px;
+      padding: 15px 20px;
+      background: transparent;
+      border: none;
+      border-radius: 10px;
+      color: #bbb;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.3s ease;
+    }
+
+    .tab-button:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+    }
+
+    .tab-button.active {
+      background: linear-gradient(135deg, #7289DA, #5865f2);
+      color: #fff;
+      box-shadow: 0 4px 15px rgba(114, 137, 218, 0.3);
+    }
+
+    /* Contenu des onglets */
+    .tab-content {
+      display: none;
+      animation: fadeIn 0.3s ease-in-out;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Cards pour chaque section */
+    .config-card {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 15px;
+      padding: 30px;
+      margin-bottom: 20px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    }
+
+    .config-card h3 {
+      color: #7289DA;
+      margin-top: 0;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid rgba(114, 137, 218, 0.3);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* Formulaires */
+    .form-group { margin-bottom: 20px; }
+    label { display: block; margin-bottom: 8px; font-weight: 600; color: #fff; }
+    input[type="text"], textarea, select { 
+      width: 100%; 
+      padding: 12px 15px; 
+      border-radius: 8px; 
+      border: 1px solid rgba(255, 255, 255, 0.3); 
+      background: rgba(255, 255, 255, 0.1); 
+      color: #fff; 
+      font-size: 14px; 
+      transition: all 0.3s ease;
+      backdrop-filter: blur(5px);
+    }
+    input[type="text"]:focus, textarea:focus, select:focus { 
+      border-color: #7289DA; 
+      outline: none; 
+      box-shadow: 0 0 0 3px rgba(114, 137, 218, 0.2);
+      background: rgba(255, 255, 255, 0.15);
+    }
+    input::placeholder, textarea::placeholder { color: rgba(255, 255, 255, 0.6); }
+
+    /* Boutons */
+    button, .btn { 
+      background: linear-gradient(135deg, #7289DA, #5865f2); 
+      padding: 12px 20px; 
+      border: none; 
+      border-radius: 8px; 
+      cursor: pointer; 
+      color: white; 
+      font-size: 14px; 
+      font-weight: 600;
+      transition: all 0.3s ease; 
+      margin: 5px 5px 5px 0;
+      box-shadow: 0 4px 15px rgba(114, 137, 218, 0.3);
+    }
+    button:hover:not(:disabled), .btn:hover:not(:disabled) { 
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(114, 137, 218, 0.4);
+    }
+    button:disabled { cursor: not-allowed; opacity: 0.6; transform: none; }
+
+    .btn-danger { background: linear-gradient(135deg, #e74c3c, #c0392b); }
+    .btn-success { background: linear-gradient(135deg, #2ecc71, #27ae60); }
+    .btn-warning { background: linear-gradient(135deg, #f39c12, #e67e22); }
+    .btn-sm { padding: 8px 15px; font-size: 12px; }
+
+    /* Checkboxes */
+    .checkbox-group { display: flex; flex-wrap: wrap; gap: 15px; }
+    .checkbox-group label { 
+      display: inline-flex; 
+      align-items: center; 
+      font-weight: normal; 
+      color: #fff; 
+      cursor: pointer; 
+      background: rgba(255, 255, 255, 0.1);
+      padding: 8px 12px;
+      border-radius: 6px;
+      transition: all 0.3s ease;
+    }
+    .checkbox-group label:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+    .checkbox-group input[type="checkbox"] { width: auto; margin-right: 8px; }
+
+    /* Sections spécialisées */
+    .system-block {
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      padding: 20px;
+      margin-bottom: 20px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(5px);
+    }
+
+    .role-assignment-system-block {
+      border-color: rgba(212, 175, 55, 0.5);
+      background: rgba(212, 175, 55, 0.1);
+    }
+
+    .translation-system-block {
+      border-color: rgba(88, 101, 242, 0.5);
+      background: rgba(88, 101, 242, 0.1);
+    }
+
+    .system-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .system-title-display {
+      margin: 0;
+      font-size: 1.2em;
+      color: #fff;
+    }
+
+    .status-enabled { color: #2ecc71; font-weight: bold; }
+    .status-disabled { color: #e74c3c; font-weight: bold; }
+
+    /* Badges */
+    .condition-badge, .role-badge {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 12px;
+      font-size: 12px;
+      margin: 2px;
+      font-weight: 600;
+    }
+    .condition-badge { background: rgba(114, 137, 218, 0.8); color: white; }
+    .role-badge { background: rgba(46, 204, 113, 0.8); color: white; }
+
+    /* Validation */
+    .input-invalid { border-color: #e74c3c !important; box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.2) !important; }
+    .input-valid { border-color: #2ecc71 !important; box-shadow: 0 0 0 3px rgba(46, 204, 113, 0.2) !important; }
+    .validation-indicator { font-size: 12px; margin-top: 5px; }
+    .help-box { 
+      background: rgba(52, 152, 219, 0.1); 
+      border: 1px solid rgba(52, 152, 219, 0.3);
+      padding: 15px; 
+      border-radius: 8px; 
+      margin-top: 10px; 
+      font-size: 14px; 
+    }
+
+    /* Utilities */
+    small { display: block; margin-top: 5px; color: rgba(255, 255, 255, 0.7); font-size: 12px; }
+    .loading { display: none; text-align: center; margin-top: 20px; color: #7289DA; }
+    .retour { text-align: center; margin-top: 30px; }
+    .retour a { color: #7289DA; text-decoration: none; font-weight: 600; }
+    .retour a:hover { text-decoration: underline; }
+
+    /* Grid layouts */
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .main-container { padding: 10px; }
+      .tab-navigation { flex-direction: column; }
+      .tab-button { min-width: auto; }
+      .grid, .grid-2 { grid-template-columns: 1fr; }
+      .system-header { flex-direction: column; align-items: flex-start; }
+    }
+
+    /* Save button fixe */
+    .save-section {
+      position: sticky;
+      bottom: 20px;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(10px);
+      padding: 20px;
+      border-radius: 15px;
+      text-align: center;
+      margin-top: 30px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .save-btn {
+      font-size: 16px;
+      padding: 15px 30px;
+      background: linear-gradient(135deg, #2ecc71, #27ae60);
+    }
+
+    /* Styles spécifiques pour les nouveaux éléments */
+    .channels-list { margin-top: 10px; padding-left: 15px; border-left: 2px solid rgba(255, 255, 255, 0.2); }
+    .channel-pair-entry { 
+      display: flex; 
+      gap: 10px; 
+      align-items: center; 
+      margin-bottom: 10px; 
+      background: rgba(255, 255, 255, 0.05);
+      padding: 10px; 
+      border-radius: 8px;
+    }
+    .channel-pair-entry select { flex: 1; }
+    .role-condition-options { 
+      margin-top: 15px; 
+      padding: 15px; 
+      background: rgba(255, 255, 255, 0.05); 
+      border-radius: 8px; 
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>
+      <img src="<%= client.user.displayAvatarURL() %>" alt="Bot Icon" width="50" style="border-radius: 50%;">
+      Configuration - <%= guild.name %>
+    </h1>
+    <p>Gérez toutes les fonctionnalités de votre serveur Discord</p>
+  </div>
+
+  <div class="main-container">
+    <!-- Navigation par onglets -->
+    <div class="tab-navigation">
+      <button class="tab-button active" onclick="showTab('general')">
+        ⚙️ Général
+      </button>
+      <button class="tab-button" onclick="showTab('welcome')">
+        🎉 Bienvenue
+      </button>
+      <button class="tab-button" onclick="showTab('roles')">
+        🎭 Attribution Rôles
+      </button>
+      <button class="tab-button" onclick="showTab('tickets')">
+        🎟️ Tickets
+      </button>
+      <button class="tab-button" onclick="showTab('logs')">
+        📝 Logs
+      </button>
+      <button class="tab-button" onclick="showTab('languages')">
+        🌐 Langues
+      </button>
+      <button class="tab-button" onclick="showTab('translation')">
+        🌍 Traduction
+      </button>
+      <button class="tab-button" onclick="showTab('reglement')">
+        📋 Règlement
+      </button>
+    </div>
+
+    <form action="/server/<%= guild.id %>/update" method="POST" id="configForm">
+      
+      <!-- ONGLET GÉNÉRAL -->
+      <div id="general-tab" class="tab-content active">
+        <div class="config-card">
+          <h3>⚙️ Paramètres Généraux</h3>
+          
+          <div class="form-group">
+            <label for="prefix">Préfixe des commandes</label>
+            <input type="text" id="prefix" name="prefix" value="<%= settings.prefix || '!' %>" placeholder="!" required>
+            <small>Le préfixe utilisé pour toutes les commandes du bot</small>
+          </div>
+
+          <div class="grid">
+            <div>
+              <h4>🏷️ Informations du serveur</h4>
+              <p><strong>Nom :</strong> <%= guild.name %></p>
+              <p><strong>ID :</strong> <%= guild.id %></p>
+              <p><strong>Membres :</strong> <%= guild.memberCount %></p>
+            </div>
+            <div>
+              <h4>🤖 Statut du bot</h4>
+              <p><strong>Connecté :</strong> <span style="color: #2ecc71;">✅ En ligne</span></p>
+              <p><strong>Permissions :</strong> Administrateur</p>
+              <p><strong>Préfixe actuel :</strong> <code><%= settings.prefix || '!' %></code></p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ONGLET BIENVENUE -->
+      <div id="welcome-tab" class="tab-content">
+        <div class="config-card">
+          <h3>🎉 Messages de Bienvenue & Départ</h3>
+          
+          <div class="grid-2">
+            <div class="form-group">
+              <label for="welcomeEnabled">Message de bienvenue</label>
+              <select id="welcomeEnabled" name="welcomeEnabled">
+                <option value="true" <%= settings.welcomeEnabled === true ? 'selected' : '' %>>✅ Activé</option>
+                <option value="false" <%= settings.welcomeEnabled === false ? 'selected' : '' %>>❌ Désactivé</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="goodbyeEnabled">Message de départ</label>
+              <select id="goodbyeEnabled" name="goodbyeEnabled">
+                <option value="true" <%= settings.goodbyeEnabled === true ? 'selected' : '' %>>✅ Activé</option>
+                <option value="false" <%= settings.goodbyeEnabled === false ? 'selected' : '' %>>❌ Désactivé</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="welcomeChannel">Salon d'annonce</label>
+            <select id="welcomeChannel" name="welcomeChannel">
+              <option value="">Aucun salon sélectionné</option>
+              <% if (typeof channels !== 'undefined' && channels.length > 0) { %>
+                <% channels.filter(c => c.type === 0).forEach(channel => { %>
+                  <option value="<%= channel.id %>" <%= settings.welcomeChannel === channel.id ? 'selected' : '' %>>
+                    #<%= channel.name %>
+                  </option>
+                <% }) %>
+              <% } %>
+            </select>
+          </div>
+
+          <div class="grid">
+            <div class="form-group">
+              <label for="welcomeMessage">Message de bienvenue</label>
+              <textarea id="welcomeMessage" name="welcomeMessage" rows="4" placeholder="Bienvenue {user} sur {server} !"><%= settings.welcomeMessage || '' %></textarea>
+              <small>Variables : {user} (mention), {username} (pseudo), {server} (nom du serveur)</small>
+            </div>
+            <div class="form-group">
+              <label for="goodbyeMessage">Message de départ</label>
+              <textarea id="goodbyeMessage" name="goodbyeMessage" rows="4" placeholder="{user} a quitté {server}."><%= settings.goodbyeMessage || '' %></textarea>
+              <small>Variables : {username} (pseudo), {server} (nom du serveur)</small>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ONGLET ATTRIBUTION DE RÔLES -->
+      <div id="roles-tab" class="tab-content">
+        <div class="config-card">
+          <h3>🎭 Attribution Automatique de Rôles</h3>
+          <p>Configurez l'attribution automatique de rôles selon différents critères (arrivée de membres, clics sur boutons, réactions, etc.)</p>
+
+          <div id="roleAssignmentSystemsContainer">
+            <% if (settings.roleAssignmentSystems && settings.roleAssignmentSystems.length > 0) { %>
+              <% settings.roleAssignmentSystems.forEach((system, systemIndex) => { %>
+                <div class="system-block role-assignment-system-block" data-system-id="<%= system.id %>">
+                  <div class="system-header">
+                    <h4 class="system-title-display">🎭 <%= system.name || `Système de Rôles #${systemIndex + 1}` %></h4>
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                      <span class="<%= system.enabled !== false ? 'status-enabled' : 'status-disabled' %>">
+                        <%= system.enabled !== false ? '✅ Activé' : '❌ Désactivé' %>
+                      </span>
+                      <button type="button" class="btn btn-danger btn-sm" onclick="removeRoleAssignmentSystem(this)">🗑️ Supprimer</button>
+                    </div>
+                  </div>
+                  
+                  <div class="grid">
+                    <div class="form-group">
+                      <label>Nom du système</label>
+                      <input type="text" class="role-system-name-input" value="<%= system.name || '' %>" placeholder="Ex: Rôle Nouveau Membre" oninput="updateRoleSystemTitleOnChange(this)">
+                    </div>
+                    <div class="form-group">
+                      <label>Rôle à attribuer</label>
+                      <select class="target-role-select">
+                        <option value="">Sélectionner un rôle</option>
+                        <% if (typeof roles !== 'undefined' && roles.length > 0) { %>
+                          <% roles.forEach(role => { %>
+                            <option value="<%= role.id %>" <%= system.targetRole === role.id ? 'selected' : '' %>>
+                              @<%= role.name %>
+                            </option>
+                          <% }) %>
+                        <% } %>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label>Description (optionnel)</label>
+                    <textarea class="role-system-description" rows="2" placeholder="Description du système"><%= system.description || '' %></textarea>
+                  </div>
+
+                  <div class="form-group">
+                    <label>Condition d'attribution</label>
+                    <select class="role-condition-select" onchange="updateRoleConditionOptions(this)">
+                      <option value="member_join" <%= system.condition === 'member_join' ? 'selected' : '' %>>🚪 Arrivée d'un nouveau membre</option>
+                      <option value="button_click" <%= system.condition === 'button_click' ? 'selected' : '' %>>🔘 Clic sur un bouton spécifique</option>
+                      <option value="reaction_add" <%= system.condition === 'reaction_add' ? 'selected' : '' %>>⭐ Réaction ajoutée à un message</option>
+                    </select>
+                  </div>
+
+                  <div class="role-condition-options">
+                    <% if (system.condition === 'button_click') { %>
+                      <div class="form-group">
+                        <label>ID du bouton</label>
+                        <input type="text" class="trigger-button-id" value="<%= system.triggerData?.buttonId || 'accept_rules' %>" placeholder="accept_rules">
+                        <small>Utilisez 'accept_rules' pour les boutons d'acceptation de règles</small>
+                      </div>
+                    <% } else if (system.condition === 'reaction_add') { %>
+                      <div class="grid-2">
+                        <div class="form-group">
+                          <label>ID du message</label>
+                          <input type="text" class="trigger-message-id" value="<%= system.triggerData?.messageId || '' %>" placeholder="123456789012345678">
+                          <small>Faites clic droit sur le message → Copier l'ID</small>
+                        </div>
+                        <div class="form-group">
+                          <label>Emoji de réaction</label>
+                          <input type="text" class="trigger-emoji" value="<%= system.triggerData?.emoji || '' %>" placeholder="✅">
+                          <small>Emoji Unicode ou nom personnalisé</small>
+                        </div>
+                      </div>
+                      <div class="help-box">
+                        <strong>💡 Comment obtenir l'ID du message :</strong><br>
+                        1. Activez le mode développeur dans Discord (Paramètres → Avancés → Mode développeur)<br>
+                        2. Faites clic droit sur le message → "Copier l'ID"<br>
+                        3. Collez l'ID dans le champ ci-dessus
+                      </div>
+                    <% } %>
+                  </div>
+
+                  <div class="form-group">
+                    <label>
+                      <input type="checkbox" class="system-enabled-checkbox" <%= system.enabled !== false ? 'checked' : '' %>>
+                      Système activé
+                    </label>
+                  </div>
+
+                  <div style="margin-top: 15px;">
+                    <strong>Aperçu :</strong>
+                    <div style="margin-top: 8px;">
+                      <span class="condition-badge">
+                        <%= system.condition === 'member_join' ? '🚪 Arrivée membre' : 
+                            system.condition === 'button_click' ? '🔘 Clic bouton' : 
+                            system.condition === 'reaction_add' ? '⭐ Réaction ajoutée' : 
+                            system.condition %>
+                      </span>
+                      <% const targetRole = (typeof roles !== 'undefined' ? roles : []).find(r => r.id === system.targetRole); %>
+                      <% if (targetRole) { %>
+                        <span class="role-badge">@<%= targetRole.name %></span>
+                      <% } else { %>
+                        <span style="color: #e74c3c;">Rôle non défini</span>
+                      <% } %>
+                    </div>
+                  </div>
+                </div>
+              <% }) %>
+            <% } else { %>
+              <p id="noRoleSystemsMessage" style="text-align: center; color: #bbb; font-style: italic;">Aucun système d'attribution de rôles configuré. Cliquez sur le bouton ci-dessous pour en ajouter un.</p>
+            <% } %>
+          </div>
+
+          <div style="text-align: center; margin-top: 20px;">
+            <button type="button" id="addRoleAssignmentSystemBtn" class="btn btn-success">
+              ➕ Créer un Nouveau Système d'Attribution
+            </button>
+          </div>
+
+          <input type="hidden" name="roleAssignmentSystemsData" id="roleAssignmentSystemsDataField">
+        </div>
+      </div>
+
+      <!-- ONGLET TICKETS -->
+      <div id="tickets-tab" class="tab-content">
+        <div class="config-card">
+          <h3>🎟️ Système de Tickets</h3>
+          
+          <div class="grid">
+            <div class="form-group">
+              <label for="ticketCategoryID">Catégorie des tickets</label>
+              <select id="ticketCategoryID" name="ticketCategoryID">
+                <option value="">Aucune catégorie sélectionnée</option>
+                <% if (typeof channels !== 'undefined' && channels.length > 0) { %>
+                  <% channels.filter(c => c.type === 4).forEach(channel => { %>
+                    <option value="<%= channel.id %>" <%= settings.ticketCategoryID === channel.id ? 'selected' : '' %>>
+                      📁 <%= channel.name %>
+                    </option>
+                  <% }) %>
+                <% } %>
+              </select>
+              <small>Le bot créera les nouveaux tickets dans cette catégorie</small>
+            </div>
+            <div class="form-group">
+              <label for="ticketLogChannelID">Salon des logs de tickets</label>
+              <select id="ticketLogChannelID" name="ticketLogChannelID">
+                <option value="">Aucun salon sélectionné</option>
+                <% if (typeof channels !== 'undefined' && channels.length > 0) { %>
+                  <% channels.filter(c => c.type === 0).forEach(channel => { %>
+                    <option value="<%= channel.id %>" <%= settings.ticketLogChannelID === channel.id ? 'selected' : '' %>>
+                      #<%= channel.name %>
+                    </option>
+                  <% }) %>
+                <% } %>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="ticketSupportRoles">Rôles de Support (IDs séparés par virgule)</label>
+            <input type="text" id="ticketSupportRoles" name="ticketSupportRoles"
+                   value="<%= (settings.ticketSupportRoles && Array.isArray(settings.ticketSupportRoles)) ? settings.ticketSupportRoles.join(', ') : '' %>"
+                   placeholder="123456789012345678, 987654321098765432">
+            <small>Ces rôles auront accès aux tickets créés</small>
+          </div>
+
+          <div class="help-box">
+            <strong>💡 Comment utiliser le système de tickets :</strong><br>
+            1. Configurez une catégorie pour organiser les tickets<br>
+            2. Définissez les rôles qui pourront voir et répondre aux tickets<br>
+            3. Utilisez la commande <code>/ticket setup</code> pour créer le message d'ouverture
+          </div>
+        </div>
+      </div>
+
+      <!-- ONGLET LOGS -->
+      <div id="logs-tab" class="tab-content">
+        <div class="config-card">
+          <h3>📝 Système de Logs</h3>
+          
+          <div class="form-group">
+            <label for="logChannelID">Salon des logs généraux</label>
+            <select id="logChannelID" name="logChannelID">
+              <option value="">Aucun salon sélectionné</option>
+              <% if (typeof channels !== 'undefined' && channels.length > 0) { %>
+                <% channels.filter(c => c.type === 0).forEach(channel => { %>
+                  <option value="<%= channel.id %>" <%= settings.logChannelID === channel.id ? 'selected' : '' %>>
+                    #<%= channel.name %>
+                  </option>
+                <% }) %>
+              <% } %>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Événements à enregistrer</label>
+            <div class="checkbox-group">
+              <% if (typeof logEventsAvailable !== 'undefined' && logEventsAvailable.length > 0) { %>
+                <% logEventsAvailable.forEach(event => { %>
+                  <label>
+                    <input type="checkbox" name="logEvents" value="<%= event %>" 
+                           <%= (settings.logEvents && Array.isArray(settings.logEvents) && settings.logEvents.includes(event)) ? 'checked' : '' %>>
+                    <%= event.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase()) %>
+                  </label>
+                <% }) %>
+              <% } else { %>
+                <p style="color: #bbb;">Aucun événement de log disponible</p>
+              <% } %>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ONGLET LANGUES -->
+      <div id="languages-tab" class="tab-content">
+        <div class="config-card">
+          <h3>🌐 Rôles par Langue</h3>
+          <p>Configurez les rôles attribués automatiquement via la commande <code>!setlangues</code></p>
+          
+          <% const languesRolesMap = { fr: 'Français', en: 'English', es: 'Español', de: 'Deutsch', pt: 'Português', ru: 'Русский', hu: 'Magyar', it: 'Italiano' }; %>
+          
+          <div class="grid">
+            <% for (const code in languesRolesMap) { %>
+              <div class="form-group">
+                <label for="lang_<%= code %>">Rôle pour <%= languesRolesMap[code] %> (<%= code %>)</label>
+                <input type="text" id="lang_<%= code %>" name="lang_<%= code %>" 
+                       value="<%= (settings.langueRoles && settings.langueRoles[code]) || '' %>" 
+                       placeholder="ID du rôle">
+              </div>
+            <% } %>
+          </div>
+
+          <div class="form-group">
+            <label for="setlanguesRequiredRoles">Rôles requis pour utiliser <code>!setlangues</code></label>
+            <input type="text" id="setlanguesRequiredRoles" name="setlanguesRequiredRoles" 
+                   value="<%= (settings.setlanguesRequiredRoles && Array.isArray(settings.setlanguesRequiredRoles)) ? settings.setlanguesRequiredRoles.join(', ') : '' %>" 
+                   placeholder="IDrôle1, IDrôle2">
+            <small>IDs des rôles séparés par virgule. Laissez vide pour autoriser tous les membres.</small>
+          </div>
+
+          <div class="help-box">
+            <strong>💡 Comment utiliser :</strong><br>
+            1. Configurez les IDs des rôles pour chaque langue<br>
+            2. Les membres pourront utiliser <code>!setlangues</code> pour obtenir leurs rôles de langue<br>
+            3. Vous pouvez restreindre l'accès à cette commande en définissant des rôles requis
+          </div>
+        </div>
+      </div>
+
+      <!-- ONGLET TRADUCTION -->
+      <div id="translation-tab" class="tab-content">
+        <div class="config-card">
+          <h3>🌍 Systèmes de Traduction Automatique</h3>
+          <p>Créez des groupes de salons indépendants pour la traduction. Les messages envoyés dans un salon d'un système seront traduits et envoyés dans les autres salons du même système.</p>
+
+          <div id="translationSystemsContainer">
+            <% if (settings.translationSystems && settings.translationSystems.length > 0) { %>
+              <% settings.translationSystems.forEach((system, systemIndex) => { %>
+                <div class="system-block translation-system-block" data-system-id="<%= system.id %>">
+                  <div class="system-header">
+                    <h4 class="system-title-display">🌍 <%= system.name || `Système de Traduction #${systemIndex + 1}` %></h4>
+                    <button type="button" class="btn btn-danger btn-sm" onclick="removeTranslationSystem(this)">🗑️ Supprimer</button>
+                  </div>
+                  
+                  <div class="form-group">
+                    <label>Nom du système</label>
+                    <input type="text" class="system-name-input" value="<%= system.name || '' %>" placeholder="Ex: Discussions Projet Equipe A" oninput="updateSystemTitleOnChange(this)">
+                  </div>
+                  
+                  <div class="channels-list">
+                    <h5>Salons pour ce système :</h5>
+                    <% if (system.channels && Object.keys(system.channels).length > 0) { %>
+                      <% Object.entries(system.channels).forEach(([langCode, channelId]) => { %>
+                        <div class="channel-pair-entry">
+                          <select class="lang-select">
+                            <% if (typeof LANGUE_CODES !== 'undefined' && LANGUE_CODES.length > 0) { %>
+                              <% LANGUE_CODES.forEach(lc => { %>
+                                <option value="<%= lc %>" <%= lc === langCode ? 'selected' : '' %>>
+                                  <% if (typeof supportedLanguagesMap !== 'undefined' && supportedLanguagesMap[lc] && supportedLanguagesMap[lc].name) { %>
+                                    <%= supportedLanguagesMap[lc].name %>
+                                  <% } else { %>
+                                    <%= lc.toUpperCase() %>
+                                  <% } %>
+                                </option>
+                              <% }) %>
+                            <% } else { %>
+                              <!-- Fallback si LANGUE_CODES n'est pas défini -->
+                              <option value="fr" <%= 'fr' === langCode ? 'selected' : '' %>>Français</option>
+                              <option value="en" <%= 'en' === langCode ? 'selected' : '' %>>English</option>
+                              <option value="es" <%= 'es' === langCode ? 'selected' : '' %>>Español</option>
+                              <option value="de" <%= 'de' === langCode ? 'selected' : '' %>>Deutsch</option>
+                              <option value="pt" <%= 'pt' === langCode ? 'selected' : '' %>>Português</option>
+                              <option value="ru" <%= 'ru' === langCode ? 'selected' : '' %>>Русский</option>
+                              <option value="hu" <%= 'hu' === langCode ? 'selected' : '' %>>Magyar</option>
+                              <option value="it" <%= 'it' === langCode ? 'selected' : '' %>>Italiano</option>
+                            <% } %>
+                          </select>
+                          <select class="channel-select">
+                            <option value="">-- Sélectionner un Salon --</option>
+                            <% if (typeof channels !== 'undefined' && channels.length > 0) { %>
+                              <% channels.filter(c => c.type === 0).forEach(channel => { %>
+                                <option value="<%= channel.id %>" <%= channel.id === channelId ? 'selected' : '' %>>
+                                  #<%= channel.name %>
+                                </option>
+                              <% }) %>
+                            <% } %>
+                          </select>
+                          <button type="button" class="btn btn-danger btn-sm" onclick="removeChannelPair(this)">🗑️ Retirer</button>
+                        </div>
+                      <% }) %>
+                    <% } else { %>
+                      <p class="no-channels-message" style="color: #bbb; font-style: italic;">Aucun salon ajouté à ce système.</p>
+                    <% } %>
+                  </div>
+                  <button type="button" class="btn btn-success btn-sm" onclick="addChannelPairToSystem(this)">➕ Ajouter Salon au Système</button>
+                </div>
+              <% }) %>
+            <% } else { %>
+              <p id="noTranslationSystemsMessage" style="text-align: center; color: #bbb; font-style: italic;">Aucun système de traduction configuré. Cliquez sur le bouton ci-dessous pour en ajouter un.</p>
+            <% } %>
+          </div>
+
+          <div style="text-align: center; margin-top: 20px;">
+            <button type="button" id="addTranslationSystemBtn" class="btn btn-success">
+              ➕ Créer un Nouveau Système de Traduction
+            </button>
+          </div>
+
+          <input type="hidden" name="translationSystemsData" id="translationSystemsDataField">
+
+          <div class="help-box">
+            <strong>💡 Comment fonctionne la traduction :</strong><br>
+            1. Créez un système de traduction avec un nom descriptif<br>
+            2. Ajoutez des salons pour différentes langues dans le même système<br>
+            3. Les messages envoyés dans un salon seront automatiquement traduits vers les autres langues<br>
+            4. Chaque système est indépendant des autres
+          </div>
+        </div>
+      </div>
+
+      <!-- ONGLET RÈGLEMENT -->
+<!-- ONGLET RÈGLEMENT -->
+<div id="reglement-tab" class="tab-content">
+  <%
+  // FORCER l'initialisation côté template si nécessaire
+  if (!settings.reglementConfig) {
+    settings.reglementConfig = {
+      enabled: false,
+      title: 'Règlement du Serveur',
+      description: 'Veuillez lire et accepter notre règlement pour accéder au serveur.',
+      color: '#7289DA',
+      sections: [
+        {
+          name: 'Règles Générales',
+          value: '• Respectez tous les membres\n• Pas de spam ou contenu inapproprié\n• Utilisez les bons salons\n• Suivez les instructions des modérateurs',
+          inline: false
+        }
+      ],
+      footerText: 'En acceptant, vous obtiendrez automatiquement vos rôles d\'accès',
+      showThumbnail: true,
+      showTimestamp: true,
+      acceptButtonText: '✅ J\'accepte le règlement',
+      declineButtonText: '❌ Je refuse',
+      acceptButtonEmoji: '📋',
+      declineButtonEmoji: '🚫'
+    };
+  }
+  %>
+  
+  <div class="config-card">
+    <h3>📋 Configuration du Règlement Personnalisé</h3>
+    <p>Créez un règlement entièrement personnalisable pour votre serveur avec boutons d'acceptation automatiques.</p>
+    
+    <!-- Activation du règlement -->
+    <div class="form-group">
+      <label>
+        <input type="checkbox" id="reglementEnabled" name="reglementEnabled" 
+               <%= settings.reglementConfig?.enabled ? 'checked' : '' %>>
+        Activer le système de règlement personnalisé
+      </label>
+      <small>Une fois activé, vous pourrez utiliser les commandes !reglement et !send-reglement</small>
+    </div>
+
+    <div id="reglementSettings" style="<%= settings.reglementConfig?.enabled ? '' : 'display: none;' %>">
+      <!-- Configuration de base -->
+      <div class="grid-2">
+        <div class="form-group">
+          <label for="reglementTitle">Titre du règlement</label>
+          <input type="text" id="reglementTitle" name="reglementTitle" 
+                 value="<%= settings.reglementConfig?.title || 'Règlement du Serveur' %>" 
+                 placeholder="Règlement du Serveur">
+        </div>
+        <div class="form-group">
+          <label for="reglementColor">Couleur de l'embed (hex)</label>
+          <input type="text" id="reglementColor" name="reglementColor" 
+                 value="<%= settings.reglementConfig?.color || '#7289DA' %>" 
+                 placeholder="#7289DA">
+          <small>Format : #7289DA ou #FF5733</small>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="reglementDescription">Description d'introduction</label>
+        <textarea id="reglementDescription" name="reglementDescription" rows="3" 
+                  placeholder="Veuillez lire et accepter notre règlement pour accéder au serveur."><%= settings.reglementConfig?.description || '' %></textarea>
+      </div>
+
+      <!-- Sections du règlement -->
+      <div class="form-group">
+        <label>Sections du règlement</label>
+        <div id="reglementSections">
+          <% if (settings.reglementConfig?.sections && settings.reglementConfig.sections.length > 0) { %>
+            <% settings.reglementConfig.sections.forEach((section, index) => { %>
+              <div class="system-block" style="border-color: rgba(114, 137, 218, 0.5); background: rgba(114, 137, 218, 0.1);">
+                <div class="system-header">
+                  <h4>📄 Section <%= index + 1 %></h4>
+                  <button type="button" class="btn btn-danger btn-sm" onclick="removeReglementSection(this)">🗑️ Supprimer</button>
+                </div>
+                <div class="grid-2">
+                  <div class="form-group">
+                    <label>Nom de la section</label>
+                    <input type="text" class="reglement-section-name" value="<%= section.name || '' %>" placeholder="Ex: Règles Générales">
+                  </div>
+                  <div class="form-group">
+                    <label>
+                      <input type="checkbox" class="reglement-section-inline" <%= section.inline ? 'checked' : '' %>>
+                      Affichage inline (côte à côte)
+                    </label>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label>Contenu de la section</label>
+                  <textarea class="reglement-section-value" rows="4" placeholder="• Respectez tous les membres&#10;• Pas de spam ou contenu inapproprié&#10;• Utilisez les bons salons"><%= section.value || '' %></textarea>
+                  <small>Utilisez • pour les puces, \n pour les retours à la ligne</small>
+                </div>
+              </div>
+            <% }) %>
+          <% } else { %>
+            <!-- Section par défaut -->
+            <div class="system-block" style="border-color: rgba(114, 137, 218, 0.5); background: rgba(114, 137, 218, 0.1);">
+              <div class="system-header">
+                <h4>📄 Section 1</h4>
+                <button type="button" class="btn btn-danger btn-sm" onclick="removeReglementSection(this)">🗑️ Supprimer</button>
+              </div>
+              <div class="grid-2">
+                <div class="form-group">
+                  <label>Nom de la section</label>
+                  <input type="text" class="reglement-section-name" value="Règles Générales" placeholder="Ex: Règles Générales">
+                </div>
+                <div class="form-group">
+                  <label>
+                    <input type="checkbox" class="reglement-section-inline">
+                    Affichage inline (côte à côte)
+                  </label>
+                </div>
+              </div>
+              <div class="form-group">
+                <label>Contenu de la section</label>
+                <textarea class="reglement-section-value" rows="4" placeholder="• Respectez tous les membres&#10;• Pas de spam ou contenu inapproprié&#10;• Utilisez les bons salons">• Respectez tous les membres
+• Pas de spam ou contenu inapproprié
+• Utilisez les bons salons
+• Suivez les instructions des modérateurs</textarea>
+              </div>
+            </div>
+          <% } %>
+        </div>
+        
+        <div style="text-align: center; margin-top: 15px;">
+          <button type="button" class="btn btn-success" onclick="addReglementSection()">
+            ➕ Ajouter une Section
+          </button>
+        </div>
+      </div>
+
+      <!-- Configuration des boutons -->
+      <div class="config-card" style="background: rgba(255, 255, 255, 0.05);">
+        <h4>🔘 Configuration des Boutons</h4>
+        <div class="grid-2">
+          <div class="form-group">
+            <label for="acceptButtonText">Texte du bouton "Accepter"</label>
+            <input type="text" id="acceptButtonText" name="acceptButtonText" 
+                   value="<%= settings.reglementConfig?.acceptButtonText || '✅ J\'accepte le règlement' %>" 
+                   placeholder="✅ J'accepte le règlement">
+          </div>
+          <div class="form-group">
+            <label for="acceptButtonEmoji">Emoji du bouton "Accepter"</label>
+            <input type="text" id="acceptButtonEmoji" name="acceptButtonEmoji" 
+                   value="<%= settings.reglementConfig?.acceptButtonEmoji || '📋' %>" 
+                   placeholder="📋">
+          </div>
+        </div>
+        <div class="grid-2">
+          <div class="form-group">
+            <label for="declineButtonText">Texte du bouton "Refuser"</label>
+            <input type="text" id="declineButtonText" name="declineButtonText" 
+                   value="<%= settings.reglementConfig?.declineButtonText || '❌ Je refuse' %>" 
+                   placeholder="❌ Je refuse">
+          </div>
+          <div class="form-group">
+            <label for="declineButtonEmoji">Emoji du bouton "Refuser"</label>
+            <input type="text" id="declineButtonEmoji" name="declineButtonEmoji" 
+                   value="<%= settings.reglementConfig?.declineButtonEmoji || '🚫' %>" 
+                   placeholder="🚫">
+          </div>
+        </div>
+      </div>
+
+      <!-- Options d'affichage -->
+      <div class="config-card" style="background: rgba(255, 255, 255, 0.05);">
+        <h4>🎨 Options d'Affichage</h4>
+        <div class="grid-2">
+          <div class="form-group">
+            <label>
+              <input type="checkbox" id="showThumbnail" name="showThumbnail" 
+                     <%= settings.reglementConfig?.showThumbnail !== false ? 'checked' : '' %>>
+              Afficher l'icône du serveur (thumbnail)
+            </label>
+          </div>
+          <div class="form-group">
+            <label>
+              <input type="checkbox" id="showTimestamp" name="showTimestamp" 
+                     <%= settings.reglementConfig?.showTimestamp !== false ? 'checked' : '' %>>
+              Afficher la date et l'heure
+            </label>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="footerText">Texte du footer (pied de page)</label>
+          <input type="text" id="footerText" name="footerText" 
+                 value="<%= settings.reglementConfig?.footerText || 'En acceptant, vous obtiendrez automatiquement vos rôles d\'accès' %>" 
+                 placeholder="En acceptant, vous obtiendrez automatiquement vos rôles d'accès">
+          <small>Affiché seulement si un système d'attribution de rôles par bouton est configuré</small>
+        </div>
+      </div>
+
+      <!-- Aperçu -->
+      <div class="config-card" style="background: rgba(46, 204, 113, 0.1); border-color: rgba(46, 204, 113, 0.3);">
+        <h4>👀 Aperçu en Temps Réel</h4>
+        <div id="reglementPreview" style="background: #2c2f33; padding: 20px; border-radius: 8px; border-left: 4px solid #7289DA;">
+          <div style="color: #7289DA; font-weight: bold; font-size: 1.2em; margin-bottom: 10px;">
+            📋 Règlement du Serveur
+          </div>
+          <div style="color: #dcddde; margin-bottom: 15px;">
+            Veuillez lire et accepter notre règlement pour accéder au serveur.
+          </div>
+          <div style="border-top: 1px solid #4f545c; padding-top: 15px;">
+            <div style="color: #ffffff; font-weight: bold; margin-bottom: 5px;">📄 Règles Générales</div>
+            <div style="color: #dcddde; margin-bottom: 15px;">• Respectez tous les membres<br>• Pas de spam ou contenu inapproprié<br>• Utilisez les bons salons</div>
+          </div>
+          <div style="margin-top: 15px;">
+            <button style="background: #43b581; color: white; border: none; padding: 8px 12px; border-radius: 3px; margin-right: 10px;">📋 ✅ J'accepte le règlement</button>
+            <button style="background: #f04747; color: white; border: none; padding: 8px 12px; border-radius: 3px;">🚫 ❌ Je refuse</button>
+          </div>
+        </div>
+        <small style="color: #8b949e; margin-top: 10px; display: block;">Cet aperçu se met à jour automatiquement quand vous modifiez les paramètres</small>
+      </div>
+
+      <!-- Aide et commandes -->
+      <div class="help-box">
+        <strong>💡 Comment utiliser :</strong><br>
+        1. Configurez votre règlement avec les sections personnalisées<br>
+        2. Assurez-vous d'avoir un système d'attribution de rôles par bouton configuré<br>
+        3. Utilisez les commandes :<br>
+        • <code>!reglement</code> - Envoie dans le salon actuel<br>
+        • <code>!send-reglement #salon</code> - Envoie dans un salon spécifique<br>
+        4. Les membres pourront cliquer sur "Accepter" pour obtenir leurs rôles automatiquement
+      </div>
+    </div>
+
+    <!-- Champ caché pour les données -->
+    <input type="hidden" name="reglementConfigData" id="reglementConfigDataField">
+  </div>
+</div>
+
+          <!-- Champ caché pour les données -->
+          <input type="hidden" name="reglementConfigData" id="reglementConfigDataField">
+        </div>
+      </div>
+
+      <!-- Section de sauvegarde fixe -->
+      <div class="save-section">
+        <button type="submit" id="submitBtn" class="save-btn">
+          💾 Sauvegarder toutes les configurations
+        </button>
+        <div id="loading" class="loading">
+          <p>⏳ Sauvegarde en cours...</p>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <p class="retour"><a href="/">← Retour à la liste des serveurs</a></p>
+
+  <!-- Templates pour JavaScript -->
+  <template id="translationSystemTemplate">
+    <div class="system-block translation-system-block" data-system-id="">
+      <div class="system-header">
+        <h4 class="system-title-display">🌍 Nouveau Système de Traduction</h4>
+        <button type="button" class="btn btn-danger btn-sm" onclick="removeTranslationSystem(this)">🗑️ Supprimer</button>
+      </div>
+      <div class="form-group">
+        <label>Nom du système</label>
+        <input type="text" class="system-name-input" placeholder="Ex: Support Francophone" oninput="updateSystemTitleOnChange(this)">
+      </div>
+      <div class="channels-list">
+        <h5>Salons pour ce système :</h5>
+        <p class="no-channels-message" style="color: #bbb; font-style: italic;">Aucun salon ajouté à ce système.</p>
+      </div>
+      <button type="button" class="btn btn-success btn-sm" onclick="addChannelPairToSystem(this)">➕ Ajouter Salon au Système</button>
+    </div>
+  </template>
+
+  <template id="channelPairEntryTemplate">
+    <div class="channel-pair-entry">
+      <select class="lang-select">
+        <!-- Les options seront ajoutées par JavaScript -->
+      </select>
+      <select class="channel-select">
+        <option value="">-- Sélectionner un Salon --</option>
+        <!-- Les options seront ajoutées par JavaScript -->
+      </select>
+      <button type="button" class="btn btn-danger btn-sm" onclick="removeChannelPair(this)">🗑️ Retirer</button>
+    </div>
+  </template>
+
+  <!-- Template pour les systèmes d'attribution de rôles -->
+  <template id="roleAssignmentSystemTemplate">
+    <div class="system-block role-assignment-system-block" data-system-id="">
+      <div class="system-header">
+        <h4 class="system-title-display">🎭 Nouveau Système de Rôles</h4>
+        <div style="display: flex; align-items: center; gap: 15px;">
+          <span class="status-enabled">✅ Activé</span>
+          <button type="button" class="btn btn-danger btn-sm" onclick="removeRoleAssignmentSystem(this)">🗑️ Supprimer</button>
+        </div>
+      </div>
+      
+      <div class="grid">
+        <div class="form-group">
+          <label>Nom du système</label>
+          <input type="text" class="role-system-name-input" placeholder="Ex: Rôle Nouveau Membre" oninput="updateRoleSystemTitleOnChange(this)">
+        </div>
+        <div class="form-group">
+          <label>Rôle à attribuer</label>
+          <select class="target-role-select">
+            <option value="">Sélectionner un rôle</option>
+            <!-- Les options seront ajoutées par JavaScript -->
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Description (optionnel)</label>
+        <textarea class="role-system-description" rows="2" placeholder="Description du système"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>Condition d'attribution</label>
+        <select class="role-condition-select" onchange="updateRoleConditionOptions(this)">
+          <option value="member_join">🚪 Arrivée d'un nouveau membre</option>
+          <option value="button_click">🔘 Clic sur un bouton spécifique</option>
+          <option value="reaction_add">⭐ Réaction ajoutée à un message</option>
+        </select>
+      </div>
+
+      <div class="role-condition-options" style="display: none;">
+        <!-- Options dynamiques selon la condition -->
+      </div>
+
+      <div class="form-group">
+        <label>
+          <input type="checkbox" class="system-enabled-checkbox" checked>
+          Système activé
+        </label>
+      </div>
+
+      <div style="margin-top: 15px;">
+        <strong>Aperçu :</strong>
+        <div style="margin-top: 8px;">
+          <span class="condition-badge">🚪 Arrivée membre</span>
+          <span style="color: #e74c3c;">Rôle non défini</span>
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <!-- Template pour les nouvelles sections de règlement -->
+  <template id="reglementSectionTemplate">
+    <div class="system-block" style="border-color: rgba(114, 137, 218, 0.5); background: rgba(114, 137, 218, 0.1);">
+      <div class="system-header">
+        <h4>📄 Nouvelle Section</h4>
+        <button type="button" class="btn btn-danger btn-sm" onclick="removeReglementSection(this)">🗑️ Supprimer</button>
+      </div>
+      <div class="grid-2">
+        <div class="form-group">
+          <label>Nom de la section</label>
+          <input type="text" class="reglement-section-name" placeholder="Ex: Règles Générales">
+        </div>
+        <div class="form-group">
+          <label>
+            <input type="checkbox" class="reglement-section-inline">
+            Affichage inline (côte à côte)
+          </label>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Contenu de la section</label>
+        <textarea class="reglement-section-value" rows="4" placeholder="• Respectez tous les membres&#10;• Pas de spam ou contenu inapproprié&#10;• Utilisez les bons salons"></textarea>
+        <small>Utilisez • pour les puces, \n pour les retours à la ligne</small>
+      </div>
+    </div>
+  </template>
+
+<script>
+    // Variables globales injectées depuis le backend
+    const SERVER_LANGUE_CODES = <%- JSON.stringify(typeof LANGUE_CODES_ARRAY !== 'undefined' ? LANGUE_CODES_ARRAY.map(lc => lc.code) : ['fr', 'en', 'es', 'de', 'pt', 'ru', 'hu', 'it']) %>;
+    const SERVER_ALL_CHANNELS = <%- JSON.stringify((typeof channels !== 'undefined' ? channels : []).filter(c => c.type === 0)) %>;
+    const SERVER_SUPPORTED_LANGUAGES_MAP = <%- JSON.stringify(typeof supportedLanguagesMap !== 'undefined' ? supportedLanguagesMap : {
+        fr: { name: 'Français', lang: 'fr' },
+        en: { name: 'English', lang: 'en' },
+        es: { name: 'Español', lang: 'es' },
+        de: { name: 'Deutsch', lang: 'de' },
+        pt: { name: 'Português', lang: 'pt' },
+        ru: { name: 'Русский', lang: 'ru' },
+        hu: { name: 'Magyar', lang: 'hu' },
+        it: { name: 'Italiano', lang: 'it' }
+    }) %>;
+    const SERVER_ALL_ROLES = <%- JSON.stringify(typeof roles !== 'undefined' ? roles : []) %>;
+
+    let isFormSubmittingGlobal = false;
+
+    // ==============================
+    // GESTION DES ONGLETS
+    // ==============================
+    function showTab(tabName) {
+        // Cacher tous les contenus d'onglets
+        document.querySelectorAll('.tab-content').forEach(content => {
+            content.classList.remove('active');
+        });
+        
+        // Désactiver tous les boutons d'onglets
+        document.querySelectorAll('.tab-button').forEach(button => {
+            button.classList.remove('active');
+        });
+        
+        // Afficher le contenu de l'onglet sélectionné
+        const targetTab = document.getElementById(tabName + '-tab');
+        if (targetTab) {
+            targetTab.classList.add('active');
+        }
+        
+        // Activer le bouton de l'onglet sélectionné
+        event.target.classList.add('active');
+    }
+
+    // ==============================
+    // FONCTIONS UTILITAIRES
+    // ==============================
+    function generateClientSideId() {
+        return 'new_' + Date.now() + '_' + Math.floor(Math.random() * 100000);
+    }
+
+    // ==============================
+    // INITIALISATION
+    // ==============================
+    document.addEventListener('DOMContentLoaded', () => {
+        console.log('[Dashboard] Initialisation du dashboard avec onglets');
+        
+        // Événements pour les boutons d'ajout
+        document.getElementById('addTranslationSystemBtn').addEventListener('click', addTranslationSystem);
+        document.getElementById('addRoleAssignmentSystemBtn').addEventListener('click', addRoleAssignmentSystem);
+        
+        // Événement pour le formulaire
+        const form = document.getElementById('configForm');
+        if (form) {
+            form.addEventListener('submit', prepareAndSubmitData);
+        }
+        
+        // Attacher les listeners aux champs existants
+        document.querySelectorAll('.translation-system-block .system-name-input').forEach(input => {
+            input.addEventListener('input', () => updateSystemTitleOnChange(input));
+        });
+        document.querySelectorAll('.role-assignment-system-block .role-system-name-input').forEach(input => {
+            input.addEventListener('input', () => updateRoleSystemTitleOnChange(input));
+        });
+        
+        // Mettre à jour les titres et initialiser les options
+        updateAllSystemTitlesOnLoad();
+        updateAllRoleSystemTitlesOnLoad();
+        
+        // Initialiser les options de condition pour les systèmes existants
+        document.querySelectorAll('.role-condition-select').forEach(select => {
+            updateRoleConditionOptions(select);
+        });
+
+        // Initialiser le règlement
+        initializeReglementSettings();
+    });
+
+    // ==============================
+    // FONCTIONS POUR LES SYSTÈMES DE TRADUCTION
+    // ==============================
+    function updateSystemTitle(nameInput) {
+        const systemBlock = nameInput.closest('.translation-system-block');
+        const titleElement = systemBlock.querySelector('.system-title-display');
+        const systemName = nameInput.value.trim();
+        const systemIndex = Array.from(document.querySelectorAll('#translationSystemsContainer .translation-system-block')).indexOf(systemBlock);
+
+        if (titleElement) {
+            if (systemName) {
+                titleElement.textContent = `🌍 ${systemName}`;
+            } else {
+                if(systemBlock.dataset.systemId && systemBlock.dataset.systemId.startsWith('new_')) {
+                    titleElement.textContent = `🌍 Nouveau Système de Traduction #${systemIndex + 1}`;
+                } else {
+                    titleElement.textContent = `🌍 Système de Traduction #${systemIndex + 1}`;
+                }
+            }
+        }
+    }
+
+    function updateSystemTitleOnChange(nameInput) {
+        updateSystemTitle(nameInput);
+    }
+    
+    function updateAllSystemTitlesOnLoad() {
+        document.querySelectorAll('#translationSystemsContainer .translation-system-block').forEach(systemBlock => {
+            const nameInput = systemBlock.querySelector('.system-name-input');
+            if (nameInput) {
+                updateSystemTitle(nameInput);
+            }
+        });
+    }
+
+    function addTranslationSystem() {
+        console.log('[Dashboard] Ajout nouveau système de traduction');
+        const container = document.getElementById('translationSystemsContainer');
+        const template = document.getElementById('translationSystemTemplate').content.cloneNode(true);
+        const systemBlock = template.querySelector('.translation-system-block');
+        const newId = generateClientSideId();
+        systemBlock.dataset.systemId = newId;
+
+        const nameInput = systemBlock.querySelector('.system-name-input');
+        nameInput.addEventListener('input', () => updateSystemTitleOnChange(nameInput));
+
+        const noSystemsMsg = document.getElementById('noTranslationSystemsMessage');
+        if (noSystemsMsg) noSystemsMsg.style.display = 'none';
+
+        container.appendChild(template);
+        updateSystemTitle(nameInput);
+        console.log('[Dashboard] Nouveau système ajouté avec ID:', newId);
+    }
+
+    function removeTranslationSystem(button) {
+        console.log('[Dashboard] Suppression système de traduction');
+        button.closest('.translation-system-block').remove();
+        updateAllSystemTitlesOnLoad();
+        
+        const container = document.getElementById('translationSystemsContainer');
+        if (!container.querySelector('.translation-system-block')) {
+            let noSystemsMsg = document.getElementById('noTranslationSystemsMessage');
+            if (noSystemsMsg) {
+                noSystemsMsg.style.display = 'block';
+            } else {
+                noSystemsMsg = document.createElement('p');
+                noSystemsMsg.id = 'noTranslationSystemsMessage';
+                noSystemsMsg.style.cssText = 'text-align: center; color: #bbb; font-style: italic;';
+                noSystemsMsg.textContent = 'Aucun système de traduction configuré. Cliquez sur le bouton ci-dessous pour en ajouter un.';
+                container.appendChild(noSystemsMsg);
+            }
+        }
+    }
+
+    function addChannelPairToSystem(button) {
+    console.log('[Dashboard] Ajout salon au système');
+    const systemBlock = button.closest('.translation-system-block');
+    const channelsList = systemBlock.querySelector('.channels-list');
+    const template = document.getElementById('channelPairEntryTemplate').content.cloneNode(true);
+    
+    // Remplir le select des langues
+    const langSelect = template.querySelector('.lang-select');
+    
+    // CORRECTION 1: Gérer SERVER_LANGUE_CODES qu'il soit objet ou tableau
+    if (typeof SERVER_LANGUE_CODES === 'object' && !Array.isArray(SERVER_LANGUE_CODES)) {
+        // Si c'est un objet, utiliser Object.keys()
+        Object.keys(SERVER_LANGUE_CODES).forEach(lc => {
+            const option = document.createElement('option');
+            option.value = lc;
+            option.textContent = SERVER_LANGUE_CODES[lc];
+            langSelect.appendChild(option);
+        });
+    } else if (Array.isArray(SERVER_LANGUE_CODES)) {
+        // Si c'est un tableau
+        SERVER_LANGUE_CODES.forEach(lc => {
+            const option = document.createElement('option');
+            option.value = lc;
+            option.textContent = (SERVER_SUPPORTED_LANGUAGES_MAP[lc] && SERVER_SUPPORTED_LANGUAGES_MAP[lc].name) ? 
+                               SERVER_SUPPORTED_LANGUAGES_MAP[lc].name : lc.toUpperCase();
+            langSelect.appendChild(option);
+        });
+    }
+
+    // Remplir le select des salons
+    const channelSelect = template.querySelector('.channel-select');
+    SERVER_ALL_CHANNELS.forEach(channel => {
+        const option = document.createElement('option');
+        option.value = channel.id;
+        option.textContent = `#${channel.name}`;
+        channelSelect.appendChild(option);
+    });
+
+    const noChannelsMsg = channelsList.querySelector('.no-channels-message');
+    if (noChannelsMsg) noChannelsMsg.remove();
+
+    // CORRECTION 2: Ajouter à la fin de channelsList au lieu d'utiliser insertBefore
+    channelsList.appendChild(template);
+}
+
+function removeChannelPair(button) {
+    console.log('[Dashboard] Suppression salon du système');
+    const pairEntry = button.closest('.channel-pair-entry');
+    const channelsList = pairEntry.closest('.channels-list');
+    pairEntry.remove();
+
+    if (!channelsList.querySelector('.channel-pair-entry')) {
+        const p = document.createElement('p');
+        p.className = 'no-channels-message';
+        p.style.cssText = 'color: #bbb; font-style: italic;';
+        p.textContent = 'Aucun salon ajouté à ce système.';
+        
+        // CORRECTION 3: Ajouter le message au début de channelsList
+        channelsList.prepend(p);
+    }
+}
+    // ==============================
+    // FONCTIONS POUR L'ATTRIBUTION DE RÔLES
+    // ==============================
+    function updateRoleSystemTitle(nameInput) {
+        const systemBlock = nameInput.closest('.role-assignment-system-block');
+        const titleElement = systemBlock.querySelector('.system-title-display');
+        const systemName = nameInput.value.trim();
+        const systemIndex = Array.from(document.querySelectorAll('#roleAssignmentSystemsContainer .role-assignment-system-block')).indexOf(systemBlock);
+
+        if (titleElement) {
+            if (systemName) {
+                titleElement.textContent = `🎭 ${systemName}`;
+            } else {
+                if(systemBlock.dataset.systemId && systemBlock.dataset.systemId.startsWith('new_')) {
+                    titleElement.textContent = `🎭 Nouveau Système de Rôles #${systemIndex + 1}`;
+                } else {
+                    titleElement.textContent = `🎭 Système de Rôles #${systemIndex + 1}`;
+                }
+            }
+        }
+    }
+
+    function updateRoleSystemTitleOnChange(nameInput) {
+        updateRoleSystemTitle(nameInput);
+    }
+
+    function updateAllRoleSystemTitlesOnLoad() {
+        document.querySelectorAll('#roleAssignmentSystemsContainer .role-assignment-system-block').forEach(systemBlock => {
+            const nameInput = systemBlock.querySelector('.role-system-name-input');
+            if (nameInput) {
+                updateRoleSystemTitle(nameInput);
+            }
+        });
+    }
+
+    function addRoleAssignmentSystem() {
+        console.log('[Dashboard] Ajout nouveau système d\'attribution de rôles');
+        const container = document.getElementById('roleAssignmentSystemsContainer');
+        const template = document.getElementById('roleAssignmentSystemTemplate').content.cloneNode(true);
+        const systemBlock = template.querySelector('.role-assignment-system-block');
+        const newId = generateClientSideId();
+        systemBlock.dataset.systemId = newId;
+
+        const nameInput = systemBlock.querySelector('.role-system-name-input');
+        nameInput.addEventListener('input', () => updateRoleSystemTitleOnChange(nameInput));
+
+        // Remplir le select des rôles
+        const roleSelect = systemBlock.querySelector('.target-role-select');
+        SERVER_ALL_ROLES.forEach(role => {
+            const option = document.createElement('option');
+            option.value = role.id;
+            option.textContent = `@${role.name}`;
+            roleSelect.appendChild(option);
+        });
+
+        const noSystemsMsg = document.getElementById('noRoleSystemsMessage');
+        if (noSystemsMsg) noSystemsMsg.style.display = 'none';
+
+        container.appendChild(template);
+        updateRoleSystemTitle(nameInput);
+        
+        // Initialiser les options de condition
+        const conditionSelect = systemBlock.querySelector('.role-condition-select');
+        updateRoleConditionOptions(conditionSelect);
+        
+        console.log('[Dashboard] Nouveau système de rôles ajouté avec ID:', newId);
+    }
+
+    function removeRoleAssignmentSystem(button) {
+        console.log('[Dashboard] Suppression système d\'attribution de rôles');
+        button.closest('.role-assignment-system-block').remove();
+        updateAllRoleSystemTitlesOnLoad();
+        
+        const container = document.getElementById('roleAssignmentSystemsContainer');
+        if (!container.querySelector('.role-assignment-system-block')) {
+            let noSystemsMsg = document.getElementById('noRoleSystemsMessage');
+            if (noSystemsMsg) {
+                noSystemsMsg.style.display = 'block';
+            } else {
+                noSystemsMsg = document.createElement('p');
+                noSystemsMsg.id = 'noRoleSystemsMessage';
+                noSystemsMsg.style.cssText = 'text-align: center; color: #bbb; font-style: italic;';
+                noSystemsMsg.textContent = 'Aucun système d\'attribution de rôles configuré. Cliquez sur le bouton ci-dessous pour en ajouter un.';
+                container.appendChild(noSystemsMsg);
+            }
+        }
+    }
+
+    function updateRoleConditionOptions(selectElement) {
+        const systemBlock = selectElement.closest('.role-assignment-system-block');
+        const optionsContainer = systemBlock.querySelector('.role-condition-options');
+        const condition = selectElement.value;
+
+        if (condition === 'member_join') {
+            optionsContainer.style.display = 'none';
+            optionsContainer.innerHTML = '';
+        } else if (condition === 'button_click') {
+            optionsContainer.style.display = 'block';
+            optionsContainer.innerHTML = `
+                <div class="form-group">
+                    <label>ID du bouton</label>
+                    <input type="text" class="trigger-button-id" value="accept_rules" placeholder="accept_rules">
+                    <small>Utilisez 'accept_rules' pour les boutons d'acceptation de règles</small>
+                </div>
+            `;
+        } else if (condition === 'reaction_add') {
+            optionsContainer.style.display = 'block';
+            optionsContainer.innerHTML = `
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label>ID du message</label>
+                        <input type="text" class="trigger-message-id" placeholder="123456789012345678">
+                        <small>Faites clic droit sur le message → Copier l'ID</small>
+                    </div>
+                    <div class="form-group">
+                        <label>Emoji de réaction</label>
+                        <input type="text" class="trigger-emoji" placeholder="✅">
+                        <small>Emoji Unicode ou nom personnalisé</small>
+                    </div>
+                </div>
+                <div class="help-box">
+                    <strong>💡 Comment obtenir l'ID du message :</strong><br>
+                    1. Activez le mode développeur dans Discord (Paramètres → Avancés → Mode développeur)<br>
+                    2. Faites clic droit sur le message → "Copier l'ID"<br>
+                    3. Collez l'ID dans le champ ci-dessus
+                </div>
+            `;
+        }
+    }
+
+    // ==============================
+    // FONCTIONS POUR LE RÈGLEMENT
+    // ==============================
+function initializeReglementSettings() {
+        const reglementEnabled = document.getElementById('reglementEnabled');
+        const reglementSettings = document.getElementById('reglementSettings');
+        
+        if (reglementEnabled) {
+            reglementEnabled.addEventListener('change', () => {
+                reglementSettings.style.display = reglementEnabled.checked ? 'block' : 'none';
+                updateReglementPreview();
+            });
+        }
+
+        // Mise à jour en temps réel de l'aperçu
+        const previewElements = [
+            'reglementTitle', 'reglementDescription', 'reglementColor',
+            'acceptButtonText', 'acceptButtonEmoji', 'declineButtonText', 'declineButtonEmoji'
+        ];
+        
+        previewElements.forEach(id => {
+            const element = document.getElementById(id);
+            if (element) {
+                element.addEventListener('input', updateReglementPreview);
+            }
+        });
+
+        // Écouter les changements dans les sections
+        document.addEventListener('input', (e) => {
+            if (e.target.classList.contains('reglement-section-name') || 
+                e.target.classList.contains('reglement-section-value')) {
+                updateReglementPreview();
+            }
+        });
+
+        updateReglementPreview();
+    }
+
+    function addReglementSection() {
+        const container = document.getElementById('reglementSections');
+        const template = document.getElementById('reglementSectionTemplate').content.cloneNode(true);
+        
+        // Mettre à jour le numéro de section
+        const sections = container.querySelectorAll('.system-block');
+        const sectionNumber = sections.length + 1;
+        template.querySelector('h4').textContent = `📄 Section ${sectionNumber}`;
+        
+        container.appendChild(template);
+        updateReglementPreview();
+    }
+
+    function removeReglementSection(button) {
+        button.closest('.system-block').remove();
+        
+        // Renuméroter les sections
+        const sections = document.querySelectorAll('#reglementSections .system-block');
+        sections.forEach((section, index) => {
+            section.querySelector('h4').textContent = `📄 Section ${index + 1}`;
+        });
+        
+        updateReglementPreview();
+    }
+
+    function updateReglementPreview() {
+        const preview = document.getElementById('reglementPreview');
+        if (!preview) return;
+
+        const title = document.getElementById('reglementTitle')?.value || 'Règlement du Serveur';
+        const description = document.getElementById('reglementDescription')?.value || 'Veuillez lire et accepter notre règlement.';
+        const color = document.getElementById('reglementColor')?.value || '#7289DA';
+        const acceptText = document.getElementById('acceptButtonText')?.value || '✅ J\'accepte le règlement';
+        const acceptEmoji = document.getElementById('acceptButtonEmoji')?.value || '📋';
+        const declineText = document.getElementById('declineButtonText')?.value || '❌ Je refuse';
+        const declineEmoji = document.getElementById('declineButtonEmoji')?.value || '🚫';
+
+        // Récupérer les sections
+        const sections = Array.from(document.querySelectorAll('#reglementSections .system-block')).map(section => {
+            const name = section.querySelector('.reglement-section-name')?.value || '';
+            const value = section.querySelector('.reglement-section-value')?.value || '';
+            return { name, value };
+        }).filter(section => section.name && section.value);
+
+        // Construire l'aperçu avec conversion des \n en <br>
+        let sectionsHtml = '';
+        sections.forEach(section => {
+            // CORRECTION : Convertir \n et \\n en <br> pour l'affichage HTML
+            const formattedValue = section.value
+                .replace(/\\n/g, '<br>')  // Convertir \\n (échappé) en <br>
+                .replace(/\n/g, '<br>');  // Convertir \n (réel) en <br>
+            
+            sectionsHtml += `
+                <div style="border-top: 1px solid #4f545c; padding-top: 15px; margin-top: 15px;">
+                    <div style="color: #ffffff; font-weight: bold; margin-bottom: 5px;">📄 ${section.name}</div>
+                    <div style="color: #dcddde; margin-bottom: 10px;">${formattedValue}</div>
+                </div>
+            `;
+        });
+
+        preview.innerHTML = `
+            <div style="color: ${color}; font-weight: bold; font-size: 1.2em; margin-bottom: 10px;">
+                📋 ${title}
+            </div>
+            <div style="color: #dcddde; margin-bottom: 15px;">
+                ${description}
+            </div>
+            ${sectionsHtml}
+            <div style="margin-top: 20px;">
+                <button style="background: #43b581; color: white; border: none; padding: 8px 12px; border-radius: 3px; margin-right: 10px;">
+                    ${acceptEmoji} ${acceptText}
+                </button>
+                <button style="background: #f04747; color: white; border: none; padding: 8px 12px; border-radius: 3px;">
+                    ${declineEmoji} ${declineText}
+                </button>
+            </div>
+        `;
+    }
+
+    function prepareReglementData() {
+        const reglementEnabled = document.getElementById('reglementEnabled')?.checked || false;
+        
+        if (!reglementEnabled) {
+            return { enabled: false };
+        }
+
+        // Récupérer toutes les sections
+        const sections = Array.from(document.querySelectorAll('#reglementSections .system-block')).map(section => {
+            const name = section.querySelector('.reglement-section-name')?.value || '';
+            const value = section.querySelector('.reglement-section-value')?.value || '';
+            const inline = section.querySelector('.reglement-section-inline')?.checked || false;
+            return { name, value, inline };
+        }).filter(section => section.name && section.value);
+
+        const reglementData = {
+            enabled: true,
+            title: document.getElementById('reglementTitle')?.value || 'Règlement du Serveur',
+            description: document.getElementById('reglementDescription')?.value || 'Veuillez lire et accepter notre règlement.',
+            color: document.getElementById('reglementColor')?.value || '#7289DA',
+            sections: sections,
+            footerText: document.getElementById('footerText')?.value || 'En acceptant, vous obtiendrez automatiquement vos rôles d\'accès',
+            showThumbnail: document.getElementById('showThumbnail')?.checked !== false,
+            showTimestamp: document.getElementById('showTimestamp')?.checked !== false,
+            acceptButtonText: document.getElementById('acceptButtonText')?.value || '✅ J\'accepte le règlement',
+            declineButtonText: document.getElementById('declineButtonText')?.value || '❌ Je refuse',
+            acceptButtonEmoji: document.getElementById('acceptButtonEmoji')?.value || '📋',
+            declineButtonEmoji: document.getElementById('declineButtonEmoji')?.value || '🚫'
+        };
+
+        return reglementData;
+    }
+    
+    // ==============================
+    // PRÉPARATION ET SOUMISSION DES DONNÉES
+    // ==============================
+    function prepareAndSubmitData(event) {
+        if (isFormSubmittingGlobal) {
+            event.preventDefault();
+            return;
+        }
+        isFormSubmittingGlobal = true;
+
+        const submitBtn = document.getElementById('submitBtn');
+        const loading = document.getElementById('loading');
+        submitBtn.disabled = true;
+        submitBtn.textContent = '💾 Sauvegarde...';
+        loading.style.display = 'block';
+        
+        // Timeout de sécurité
+        setTimeout(() => {
+            if (isFormSubmittingGlobal) {
+                submitBtn.disabled = false;
+                submitBtn.textContent = '💾 Sauvegarder toutes les configurations';
+                loading.style.display = 'none';
+                isFormSubmittingGlobal = false;
+            }
+        }, 15000);
+
+        // Préparer les données des systèmes de traduction
+        const translationSystemsData = [];
+        document.querySelectorAll('#translationSystemsContainer .translation-system-block').forEach((systemBlock, systemIdx) => {
+            let systemId = systemBlock.dataset.systemId;
+            const systemNameInput = systemBlock.querySelector('.system-name-input');
+            let systemName = systemNameInput ? systemNameInput.value.trim() : '';
+            
+            if (!systemName) {
+                systemName = `Système de Traduction #${systemIdx + 1}`;
+            }
+
+            const channels = {};
+            let hasChannelsInSystem = false;
+            systemBlock.querySelectorAll('.channels-list .channel-pair-entry').forEach(pairEntry => {
+                const lang = pairEntry.querySelector('.lang-select').value;
+                const channelId = pairEntry.querySelector('.channel-select').value;
+                if (lang && channelId) {
+                    channels[lang] = channelId;
+                    hasChannelsInSystem = true;
+                }
+            });
+
+            if (hasChannelsInSystem) {
+                translationSystemsData.push({
+                    id: systemId.startsWith('new_') ? null : systemId,
+                    name: systemName,
+                    channels: channels
+                });
+            }
+        });
+
+        // Préparer les données des systèmes d'attribution de rôles
+        const roleAssignmentSystemsData = [];
+        document.querySelectorAll('#roleAssignmentSystemsContainer .role-assignment-system-block').forEach((systemBlock, systemIdx) => {
+            let systemId = systemBlock.dataset.systemId;
+            const systemNameInput = systemBlock.querySelector('.role-system-name-input');
+            let systemName = systemNameInput ? systemNameInput.value.trim() : '';
+            
+            if (!systemName) {
+                systemName = `Système de Rôles #${systemIdx + 1}`;
+            }
+
+            const descriptionTextarea = systemBlock.querySelector('.role-system-description');
+            const description = descriptionTextarea ? descriptionTextarea.value.trim() : '';
+            
+            const conditionSelect = systemBlock.querySelector('.role-condition-select');
+            const condition = conditionSelect ? conditionSelect.value : 'member_join';
+            
+            const targetRoleSelect = systemBlock.querySelector('.target-role-select');
+            const targetRole = targetRoleSelect ? targetRoleSelect.value : '';
+            
+            const enabledCheckbox = systemBlock.querySelector('.system-enabled-checkbox');
+            const enabled = enabledCheckbox ? enabledCheckbox.checked : true;
+
+            // Données spécifiques à la condition
+            const triggerData = {};
+            if (condition === 'button_click') {
+                const buttonIdInput = systemBlock.querySelector('.trigger-button-id');
+                if (buttonIdInput) {
+                    triggerData.buttonId = buttonIdInput.value.trim() || 'accept_rules';
+                }
+            } else if (condition === 'reaction_add') {
+                const messageIdInput = systemBlock.querySelector('.trigger-message-id');
+                const emojiInput = systemBlock.querySelector('.trigger-emoji');
+                if (messageIdInput && emojiInput) {
+                    triggerData.messageId = messageIdInput.value.trim();
+                    triggerData.emoji = emojiInput.value.trim();
+                }
+            }
+
+            if (targetRole) {
+                roleAssignmentSystemsData.push({
+                    id: systemId.startsWith('new_') ? null : systemId,
+                    name: systemName,
+                    description: description,
+                    condition: condition,
+                    targetRole: targetRole,
+                    triggerData: triggerData,
+                    enabled: enabled
+                });
+            }
+        });
+
+        // Préparer les données du règlement
+        const reglementData = prepareReglementData();
+
+        // Injecter les données dans les champs cachés
+        document.getElementById('translationSystemsDataField').value = JSON.stringify(translationSystemsData);
+        document.getElementById('roleAssignmentSystemsDataField').value = JSON.stringify(roleAssignmentSystemsData);
+        document.getElementById('reglementConfigDataField').value = JSON.stringify(reglementData);
+        
+        console.log('[Dashboard] Données finales des systèmes de traduction:', translationSystemsData);
+        console.log('[Dashboard] Données finales des systèmes d\'attribution de rôles:', roleAssignmentSystemsData);
+        console.log('[Dashboard] Données finales du règlement:', reglementData);
+    }
+
+    // ==============================
+    // FONCTIONS GLOBALES POUR LES ÉVÉNEMENTS ONCLICK
+    // ==============================
+    window.showTab = showTab;
+    window.updateSystemTitleOnChange = updateSystemTitleOnChange;
+    window.updateRoleSystemTitleOnChange = updateRoleSystemTitleOnChange;
+    window.addChannelPairToSystem = addChannelPairToSystem;
+    window.removeChannelPair = removeChannelPair;
+    window.removeTranslationSystem = removeTranslationSystem;
+    window.addRoleAssignmentSystem = addRoleAssignmentSystem;
+    window.removeRoleAssignmentSystem = removeRoleAssignmentSystem;
+    window.updateRoleConditionOptions = updateRoleConditionOptions;
+    window.addReglementSection = addReglementSection;
+    window.removeReglementSection = removeReglementSection;
+    window.updateReglementPreview = updateReglementPreview;
+    window.prepareReglementData = prepareReglementData;
+
+    // ==============================
+    // GESTION DES ÉVÉNEMENTS DE VALIDATION
+    // ==============================
+    
+    // Validation en temps réel pour les champs requis
+    function validateField(field) {
+        const value = field.value.trim();
+        const isValid = value.length > 0;
+        
+        field.classList.remove('input-valid', 'input-invalid');
+        if (isValid) {
+            field.classList.add('input-valid');
+        } else {
+            field.classList.add('input-invalid');
+        }
+        
+        return isValid;
+    }
+
+    // Validation du formulaire avant soumission
+    function validateForm() {
+        const requiredFields = document.querySelectorAll('input[required], select[required]');
+        let isFormValid = true;
+        
+        requiredFields.forEach(field => {
+            if (!validateField(field)) {
+                isFormValid = false;
+            }
+        });
+        
+        return isFormValid;
+    }
+
+    // Attacher la validation aux champs requis au chargement
+    document.addEventListener('DOMContentLoaded', () => {
+        const requiredFields = document.querySelectorAll('input[required], select[required]');
+        requiredFields.forEach(field => {
+            field.addEventListener('blur', () => validateField(field));
+            field.addEventListener('input', () => {
+                if (field.classList.contains('input-invalid')) {
+                    validateField(field);
+                }
+            });
+        });
+    });
+
+    // ==============================
+    // SYSTÈME DE NOTIFICATIONS
+    // ==============================
+    
+    // Fonction pour afficher des notifications temporaires
+    function showNotification(message, type = 'info') {
+        const notification = document.createElement('div');
+        notification.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            z-index: 10000;
+            animation: slideIn 0.3s ease-out;
+            max-width: 300px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        `;
+        
+        switch(type) {
+            case 'success':
+                notification.style.background = 'linear-gradient(135deg, #2ecc71, #27ae60)';
+                break;
+            case 'error':
+                notification.style.background = 'linear-gradient(135deg, #e74c3c, #c0392b)';
+                break;
+            case 'warning':
+                notification.style.background = 'linear-gradient(135deg, #f39c12, #e67e22)';
+                break;
+            default:
+                notification.style.background = 'linear-gradient(135deg, #3498db, #2980b9)';
+        }
+        
+        notification.textContent = message;
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+            notification.style.animation = 'slideOut 0.3s ease-in forwards';
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.parentNode.removeChild(notification);
+                }
+            }, 300);
+        }, 4000);
+    }
+
+    // Ajouter les animations CSS pour les notifications
+    const notificationStyles = document.createElement('style');
+    notificationStyles.textContent = `
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes slideOut {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(100%); opacity: 0; }
+        }
+    `;
+    document.head.appendChild(notificationStyles);
+
+    // ==============================
+    // RACCOURCIS CLAVIER
+    // ==============================
+    
+    document.addEventListener('keydown', (event) => {
+        // Ctrl/Cmd + S pour sauvegarder
+        if ((event.ctrlKey || event.metaKey) && event.key === 's') {
+            event.preventDefault();
+            
+            if (!isFormSubmittingGlobal) {
+                const form = document.getElementById('configForm');
+                if (form && validateForm()) {
+                    prepareAndSubmitData({ preventDefault: () => {} });
+                    form.submit();
+                    showNotification('Configuration sauvegardée !', 'success');
+                } else {
+                    showNotification('Veuillez corriger les erreurs avant de sauvegarder', 'warning');
+                }
+            }
+        }
+        
+        // Échap pour réinitialiser
+        if (event.key === 'Escape') {
+            console.log('[Dashboard] Touche Échap pressée');
+        }
+    });
+
+    // ==============================
+    // GESTION DES ERREURS ET DEBUG
+    // ==============================
+    
+    // Log détaillé pour le debugging
+    function debugLog(message, data = null) {
+        if (console && console.log) {
+            const timestamp = new Date().toLocaleTimeString();
+            console.log(`[${timestamp}] ${message}`, data || '');
+        }
+    }
+
+    // Gestionnaire d'erreurs global
+    window.addEventListener('error', (event) => {
+        debugLog('Erreur JavaScript détectée:', {
+            message: event.message,
+            filename: event.filename,
+            lineno: event.lineno,
+            colno: event.colno
+        });
+        
+        showNotification('Une erreur s\'est produite. Veuillez actualiser la page.', 'error');
+    });
+
+    debugLog('Dashboard entièrement initialisé avec toutes les fonctionnalités');
+</script>
+</body>
+</html>

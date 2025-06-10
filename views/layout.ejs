@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= typeof title !== 'undefined' ? title : 'Dashboard Bot Discord' %></title>
+  <link rel="stylesheet" href="/css/style.css"> <style>
+    /* Styles généraux pour le layout (peuvent être déplacés dans style.css) */
+    body {
+      font-family: sans-serif;
+      background: #111;
+      color: #fff;
+      padding: 20px;
+      margin: 0;
+    }
+    header {
+      background: #333;
+      padding: 15px 20px;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    header h1 {
+      color: #2ecc71;
+      margin: 0;
+    }
+    nav {
+      background: #444;
+      padding: 10px 20px;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    nav a {
+      color: white;
+      text-decoration: none;
+      margin: 0 15px;
+      font-weight: bold;
+    }
+    nav a:hover {
+      text-decoration: underline;
+    }
+    main {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 20px;
+      background: #222;
+      border-radius: 8px;
+    }
+    footer {
+      text-align: center;
+      padding: 20px;
+      margin-top: 30px;
+      color: #888;
+    }
+    .logout-link {
+      display: inline-block;
+      margin-top: 20px;
+      color: #e74c3c;
+      text-decoration: none;
+    }
+    .logout-link:hover {
+      text-decoration: underline;
+    }
+    /* Styles spécifiques aux icônes qui peuvent être utilisés dans home.ejs */
+    .iconuser, .iconserveur {
+      width: 75px;
+      height: 75px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid #000;
+      vertical-align: middle;
+      margin-right: 10px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Mon Dashboard Discord</h1>
+  </header>
+  <nav>
+    <a href="/">Accueil</a>
+    <a href="/logout" class="logout-link">🔒 Déconnexion</a>
+  </nav>
+
+  <main>
+    <%- body %> </main>
+
+  <footer>
+    <p>&copy; 2025 The Kraken Bot. Tous droits réservés.</p>
+  </footer>
+</body>
+</html>

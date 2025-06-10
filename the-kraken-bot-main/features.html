@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Fonctionnalités - The Kraken Bot</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #0d1117;
+      color: #c9d1d9;
+      margin: 0;
+      padding: 0;
+      line-height: 1.6;
+      position: relative; /* Pour que les bulles en absolute soient relatives à body */
+      overflow-x: hidden;
+    }
+
+    header {
+      background-color: #161b22;
+      padding: 2rem;
+      text-align: center;
+      position: relative;
+      z-index: 2; /* Pour passer devant les bulles */
+    }
+
+    header h1 {
+      font-size: 2.8rem;
+      margin-bottom: 0.5rem;
+    }
+
+    header p {
+      color: #8b949e;
+      margin-top: 0.5rem;
+    }
+
+    .logo {
+      height: 50px;
+      vertical-align: middle;
+      margin-right: 10px;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: auto;
+      padding: 2rem;
+      position: relative;
+      z-index: 2; /* Pour passer devant les bulles */
+    }
+
+    h2 {
+      margin-top: 2.5rem;
+      color: #58a6ff;
+      font-size: 1.8rem;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    li {
+      margin: 0.6rem 0;
+      padding-left: 1rem;
+      border-left: 3px solid #30363d;
+    }
+
+    footer {
+      text-align: center;
+      padding: 1rem;
+      font-size: 0.9rem;
+      background-color: #161b22;
+      color: #6e7681;
+      position: relative;
+      z-index: 2; /* Pour passer devant les bulles */
+    }
+
+    a {
+      color: #58a6ff;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    .emoji {
+      font-size: 1.2rem;
+      margin-right: 0.4rem;
+    }
+
+    .button {
+      display: inline-block;
+      margin-top: 1.5rem;
+      padding: 0.6rem 1.4rem;
+      background-color: #238636;
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: bold;
+      position: relative;
+      z-index: 2;
+    }
+
+    .button:hover {
+      background-color: #2ea043;
+    }
+
+    .button.back {
+      background-color: #0366d6;
+    }
+
+    .button.back:hover {
+      background-color: #218bff;
+    }
+
+    /* Animation bulles */
+    .bubbles {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none; /* Ne pas gêner la sélection ou clic */
+      overflow: visible;
+      z-index: 1;
+    }
+
+    .bubble {
+      position: absolute;
+      bottom: -100px; /* En dessous de la vue */
+      background: rgba(88, 166, 255, 0.3);
+      border-radius: 50%;
+      opacity: 0.7;
+      animation-name: rise;
+      animation-timing-function: linear;
+      animation-iteration-count: infinite;
+    }
+
+    /* Différentes tailles, positions et vitesses pour les bulles */
+    .bubble:nth-child(1) {
+      width: 20px;
+      height: 20px;
+      left: 10%;
+      animation-duration: 8s;
+      animation-delay: 0s;
+    }
+
+    .bubble:nth-child(2) {
+      width: 35px;
+      height: 35px;
+      left: 30%;
+      animation-duration: 10s;
+      animation-delay: 2s;
+      opacity: 0.5;
+    }
+
+    .bubble:nth-child(3) {
+      width: 15px;
+      height: 15px;
+      left: 50%;
+      animation-duration: 7s;
+      animation-delay: 4s;
+    }
+
+    .bubble:nth-child(4) {
+      width: 25px;
+      height: 25px;
+      left: 70%;
+      animation-duration: 12s;
+      animation-delay: 1s;
+      opacity: 0.6;
+    }
+
+    .bubble:nth-child(5) {
+      width: 30px;
+      height: 30px;
+      left: 85%;
+      animation-duration: 9s;
+      animation-delay: 3s;
+    }
+
+    @keyframes rise {
+      0% {
+        transform: translateY(0) scale(1);
+        opacity: 0.7;
+      }
+      80% {
+        opacity: 0.3;
+      }
+      100% {
+        transform: translateY(-110vh) scale(1.2);
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="bubbles">
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+  </div>
+
+  <header>
+    <h1>
+      <img src="krn.jpg" alt="Logo Kraken Bot" class="logo" /><span data-i18n="features_title">Fonctionnalités</span>
+    </h1>
+    <p data-i18n="features_description">Découvrez toutes les commandes et modules disponibles dans The Kraken Bot</p> <a href="index.html" class="button back" data-i18n="back_to_home">Retour à l'accueil</a> </header>
+
+  <div class="container">
+
+    <h2><span class="emoji">🎶</span> <span data-i18n="music_title">Musique</span></h2>
+    <ul>
+      <li>[prefix]play [nom/lien] — <span data-i18n="music_play">Joue une musique</span></li>
+      <li>[prefix]playlist [lien/nom] — <span data-i18n="music_playlist">Joue une playlist</span></li>
+      <li>[prefix]add [nom/lien] — <span data-i18n="music_add">Ajoute une musique à la file d'attente</span></li>
+      <li>[prefix]skip — <span data-i18n="music_skip">Passe à la musique suivante</span></li>
+      <li>[prefix]stop — <span data-i18n="music_stop">Arrête la musique</span></li>
+      <li>[prefix]pause / [prefix]resume — <span data-i18n="music_pause">Pause/Reprend la musique</span></li>
+      <li>[prefix]queue — <span data-i18n="music_queue">Affiche la file d'attente</span></li>
+      <li>[prefix]volume [0-100] — <span data-i18n="music_volume">Définit le volume</span></li>
+      <li>[prefix]loop — <span data-i18n="music_loop">Active/Désactive la boucle</span></li>
+      <li>[prefix]nowplaying — <span data-i18n="music_nowplaying">Affiche la musique en cours</span></li>
+    </ul>
+
+    <h2><span class="emoji">🔨</span> <span data-i18n="moderation_sanction_title">Modération / Sanction</span></h2>
+    <ul>
+      <li>[prefix]mute @user — <span data-i18n="mod_mute">Mute un utilisateur</span></li>
+      <li>[prefix]unmute @user — <span data-i18n="mod_unmute">Unmute un utilisateur</span></li>
+      <li>[prefix]tempmute @user [durée] — <span data-i18n="mod_tempmute">Mute temporairement</span></li>
+      <li>[prefix]ban @user [raison] — <span data-i18n="mod_ban">Banni un utilisateur</span></li>
+      <li>[prefix]listwarn @user — <span data-i18n="mod_listwarn">Liste les avertissements</span></li>
+      <li>[prefix]kick @user [raison] — <span data-i18n="mod_kick">Expulse un utilisateur</span></li>
+      <li>[prefix]unban [userId] — <span data-i18n="mod_unban">Débanni un utilisateur</span></li>
+      <li>[prefix]warn @user [raison] — <span data-i18n="mod_warn">Avertit un utilisateur</span></li>
+      <li>[prefix]unwarn @user — <span data-i18n="mod_unwarn">Retire un avertissement</span></li>
+    </ul>
+
+    <h2><span class="emoji">🛠️</span> <span data-i18n="moderation_management_title">Modération / Gestion</span></h2>
+    <ul>
+      <li>[prefix]clear [nombre] — <span data-i18n="mod_clear">Supprime des messages</span></li>
+      <li>[prefix]lock — <span data-i18n="mod_lock">Verrouille le salon</span></li>
+      <li>[prefix]unlock — <span data-i18n="mod_unlock">Déverrouille le salon</span></li>
+      <li>[prefix]slowmode [durée] — <span data-i18n="mod_slowmode">Active le mode lent</span></li>
+      <li>[prefix]lockall — <span data-i18n="mod_lockall">Verrouille tous les salons</span></li>
+      <li>[prefix]unlockall — <span data-i18n="mod_unlockall">Déverrouille tous les salons</span></li>
+      <li>[prefix]vider-salon — <span data-i18n="mod_clear_channel">Supprime et recrée le salon</span></li>
+    </ul>
+
+    <h2><span class="emoji">🤖</span> <span data-i18n="autoreact_title">Auto-react / Message</span></h2>
+    <ul>
+      <li>[prefix]createcommande [message] — <span data-i18n="auto_createcommand">Crée une commande auto</span></li>
+      <li>[prefix]delcommande [message] — <span data-i18n="auto_delcommand">Supprime une commande auto</span></li>
+      <li>[prefix]listecommandes — <span data-i18n="auto_listcommands">Liste les commandes auto</span></li>
+      <li>[prefix]autorespond [message] — <span data-i18n="auto_respond">Crée une auto-réponse</span></li>
+      <li>[prefix]delrespond [numero] — <span data-i18n="auto_delrespond">Supprime une auto-réponse</span></li>
+      <li>[prefix]listrespond — <span data-i18n="auto_listrespond">Liste les auto-réponses</span></li>
+      <li>[prefix]addreact [mot] [emoji] — <span data-i18n="auto_addreact">Ajoute une auto-réaction</span></li>
+      <li>[prefix]delreact [numero] — <span data-i18n="auto_delreact">Supprime une auto-réaction</span></li>
+      <li>[prefix]listreact — <span data-i18n="auto_listreact">Liste les auto-réactions</span></li>
+    </ul>
+
+    <h2><span class="emoji">📊</span> <span data-i18n="polls_title">Sondages</span></h2>
+    <ul>
+      <li>[prefix]poll &lt;question&gt; ; &lt;option1&gt; ; &lt;option2&gt; ... — <span data-i18n="poll_create">Crée un sondage</span></li>
+      <li>[prefix]closepoll &lt;ID&gt; — <span data-i18n="poll_close">Ferme un sondage</span></li>
+    </ul>
+
+    <h2><span class="emoji">🌐</span> <span data-i18n="languages_title">Langues</span></h2>
+    <ul>
+      <li>[prefix]setlangues — <span data-i18n="lang_set">Permet de choisir ou retirer ses rôles de langues</span></li>
+    </ul>
+
+    <h2><span class="emoji">❓</span> <span data-i18n="help_title">Aide</span></h2>
+    <ul>
+      <li>[prefix]help — <span data-i18n="help_cmd">Affiche la liste des commandes</span></li>
+    </ul>
+
+  </div>
+
+  <footer>
+    &copy; 2025 The Kraken Bot — <a href="privacy.html" data-i18n="footer_privacy">Politique de confidentialité</a> | <a href="terms.html" data-i18n="footer_terms">Conditions d'utilisation</a>
+  </footer>
+  <script src="lang.js"></script>
+  <script>
+    // Ajout de la fonction pour mettre à jour le titre de la page
+    function updatePageTitle(lang) {
+      const titleElement = document.querySelector('title');
+      if (titleElement && translations[lang] && translations[lang].features_title) {
+        titleElement.textContent = translations[lang].features_title + " - The Kraken Bot";
+      }
+    }
+
+    // La fonction changeLang sera chargée depuis lang.js.
+    // Assurez-vous simplement qu'elle met à jour le titre de la page.
+    const originalChangeLang = window.changeLang; // Garder une référence à la fonction originale de lang.js
+
+    window.changeLang = function(lang) {
+      originalChangeLang(lang); // Appeler la fonction originale pour les data-i18n
+      updatePageTitle(lang); // Mettre à jour le titre spécifique à cette page
+    };
+
+    // Charger la langue au chargement de la page
+    window.addEventListener('load', () => {
+      // Utilisez la fonction loadLanguage de lang.js
+      if (typeof loadLanguage === 'function') {
+        loadLanguage();
+      } else {
+        // Fallback si loadLanguage n'est pas encore défini
+        let lang = 'fr';
+        try {
+          lang = localStorage.getItem('siteLang') || 'fr';
+        } catch (e) {
+          lang = 'fr'; // Défaut
+        }
+        window.changeLang(lang);
+      }
+    });
+  </script>
+
+</body>
+</html>
